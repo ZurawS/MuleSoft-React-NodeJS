@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:wsc="http://www.mulesoft.org/schema/mule/wsc"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/wsc http://www.mulesoft.org/schema/mule/wsc/current/mule-wsc.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<http:listener-config name="HTTP_Listener_configuration" doc:name="HTTP_Listener_configuration" doc:id="70a95691-a977-48ff-8439-79a5d2fc7bb7" >
+		<http:listener-connection host="0.0.0.0" port="88" />
+		<http:listener-interceptors >
+			<http:cors-interceptor >
+				<http:origins>
+					<http:origin url="http://localhost:3000" accessControlMaxAge="30" >
+					 <http:allowed-methods>
+              <http:method methodName="POST"/>
+              <http:method methodName="GET"/>
+              <http:method methodName="PUT"/>
+              <http:method methodName="DELETE"/>
+            </http:allowed-methods>
+            <http:allowed-headers>
+              <http:header headerName="Content-Type"/>
+              <http:header headerName="Content-Length"/>
+              <http:header headerName="Accept-Encoding"/>
+              <http:header headerName="X-CSRF-Token"/>
+              <http:header headerName="Authorization"/>
+              <http:header headerName="Accept"/>
+              <http:header headerName="origin"/>
+              <http:header headerName="Cache-Control"/>
+              <http:header headerName="X-Requested-With"/>
+            </http:allowed-headers>
+            <http:expose-headers>
+              <http:header headerName="Content-Type"/>
+              <http:header headerName="Content-Length"/>
+              <http:header headerName="Authorization"/>
+              <http:header headerName="X-Requested-With"/>
+              <http:header headerName="Accept"/>
+            </http:expose-headers>
+					</http:origin>
+				</http:origins>
+			</http:cors-interceptor>
+		</http:listener-interceptors>
+	</http:listener-config>
+	<wsc:config name="Web_Service_Consumer_Config" doc:name="Web Service Consumer Config" doc:id="0a403287-6d01-45e1-bb5f-47ffcc7a5f71" >
+		<wsc:connection wsdlLocation="https://www.dataaccess.com/webservicesserver/NumberConversion.wso?wsdl" service="NumberConversion" port="NumberConversionSoap" address="https://www.dataaccess.com/webservicesserver/NumberConversion.wso">
+			<wsc:web-service-security actor="http://schemas.xmlsoap.org/soap/actor/next" />
+		</wsc:connection>
+	</wsc:config>
+	<http:request-config name="First_REST_API" doc:name="HTTP Request configuration" doc:id="84f17cc0-eb86-4c2a-b122-7d5f22781423" basePath="https://random-data-api.com/api/number/random_number?size=1" >
+		<http:request-connection protocol="HTTPS" />
+	</http:request-config>
+	<http:request-config name="HTTP_Request_configuration" doc:name="HTTP Request configuration" doc:id="93a99571-d4d7-43c3-9505-26f2a56e97b3">
+		<http:request-connection protocol="HTTPS" />
+	</http:request-config>
+	<http:request-config name="HTTP_Request_configuration1" doc:name="HTTP Request configuration" doc:id="282ae316-cee6-4305-ae58-283858258ec6">
+		<http:request-connection protocol="HTTPS" host="random-data-api.com"/>
+	</http:request-config>
+	<http:request-config name="Local_REST_API_Config" doc:name="HTTP Request configuration" doc:id="6cf97fb4-f770-44fb-b450-4ccccf29db1a" >
+		<http:request-connection host="localhost" port="1234" />
+	</http:request-config>
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="0a9a912a-50df-4963-b17a-f61f53aaa656" >
+		<http:listener-connection host="0.0.0.0" port="3001" readTimeout="3000"/>
+	</http:listener-config>
+	<flow name="GET:\courses\id-find_course_by_id" doc:id="e4042d03-603f-41c5-91a1-e12c2992d75e" >
+		<http:listener doc:name="Listener with URI ID" doc:id="b1ecf442-8975-4385-b11b-cac1677613ef" config-ref="HTTP_Listener_configuration" path="/api/courses/find/{id}" />
+		<set-payload value="#[attributes.uriParams.id]" doc:name="Set payload with URI ID" doc:id="8499152a-c601-488c-8cbd-2a081e38b20f" />
+		<http:request method="GET" doc:name="REST API request for Course with ID" doc:id="d17382dd-e848-44fc-b4e4-495991b61325" config-ref="Local_REST_API_Config" path="/api/courses/find/{id}" outputMimeType="application/json">
+			<http:body><![CDATA[{}]]></http:body>
+			<http:uri-params><![CDATA[#[output application/java
+---
+{
+ id: payload
+}]]]></http:uri-params>
+		</http:request>
+		<set-variable value='#[output application/json
+&#10;---
+&#10;{
+&#10;	isPublished: payload.isPublished,
+&#10;	tags: payload.tags map ( tag , indexOfTag ) -&gt; tag,
+&#10;	"_id": payload."_id",
+&#10;	dishName: payload.dishName,
+&#10;	category: payload.category,
+&#10;	author: payload.author,
+&#10;	ingredients: payload.ingredients map ( ingredient , indexOfIngredient ) -&gt; {
+&#10;		"_id": ingredient."_id",
+&#10;		quantity: ingredient.quantity,
+&#10;		unit: ingredient.unit,
+&#10;		description: ingredient.description
+&#10;	},
+&#10;	cookingTime: payload.cookingTime,
+&#10;	sourceUrl: payload.sourceUrl,
+&#10;	imageUrl: payload.imageUrl,
+&#10;	price: payload.price,
+&#10;	date: payload.date,
+&#10;	"__v": payload."__v"
+&#10;}]' doc:name="Set variable with response JSON" doc:id="f712c7d0-65a8-48ab-a7a4-088ba23c9956" variableName="results" mimeType="application/json" />
+		<http:request method="GET" doc:name="Call REST API for random number" doc:id="90a7f6f5-aeba-4b28-a5af-43dcd4b87e16" config-ref="HTTP_Request_configuration1" path="/api/number/random_number?size=1" />
+		<set-variable value="#[output application/java
+&#10;---
+&#10;payload.decimal]" doc:name="Set Variable with REST API response " doc:id="5e409a00-0968-4cc7-a24e-da4efb9b2e03" variableName="price_number"/>
+		<ee:transform doc:name="Transform response to XML" doc:id="3a0f5690-a8ca-4e4d-9a8a-71645cf0940f" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[output application/xml
+---
+{
+            NumberToDollars @(xmlns: "http://www.dataaccess.com/webservicesserver/"): {
+                dNum: payload.decimal
+}
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<wsc:consume operation="NumberToDollars" doc:name="Call SOAP API with payload for string version of number" doc:id="0a8622d2-98ab-4114-8902-57bcdc2f58ba" config-ref="Web_Service_Consumer_Config" />
+		<set-variable value="#[output application/java
+&#10;ns ns0 http://www.dataaccess.com/webservicesserver/
+&#10;---
+&#10;payload.body.ns0#NumberToDollarsResponse.ns0#NumberToDollarsResult]" doc:name="Set Variable with SOAP API response" doc:id="25495ffe-b5ef-49de-a9c0-d4db668a58a6" variableName="price_string"/>
+		<ee:transform doc:name="Transform all responses into one JSON" doc:id="10c1c874-782b-4c4c-84d4-bb14bf3e50a7" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	isPublished: vars.results.isPublished,
+	tags: vars.results.tags map ( tag , indexOfTag ) -> tag,
+	"_id": vars.results."_id",
+	dishName: vars.results.dishName,
+	category: vars.results.category,
+	author: vars.results.author,
+	ingredients: vars.results.ingredients map ( ingredient , indexOfIngredient ) -> {
+		"_id": ingredient."_id",
+		quantity: ingredient.quantity,
+		unit: ingredient.unit,
+		description: ingredient.description
+	},
+	cookingTime: vars.results.cookingTime,
+	sourceUrl: vars.results.sourceUrl,
+	imageUrl: vars.results.imageUrl,
+	price: vars.price_number[0],
+	priceText: vars.price_string,	
+	date: vars.results.date,
+	"__v": vars.results."__v"
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+	<flow name="GET:\courses\name-find_course_by_name" doc:id="11a73a6e-f58f-4c7d-b79a-a310f4e4dc8d" >
+		<http:listener doc:name="Listener with URI name" doc:id="ee5e9716-60c1-41ae-9c12-dcd1b44cbb96" config-ref="HTTP_Listener_configuration" path="/api/courses/{name}" />
+		<set-payload value="#[attributes.uriParams.name]" doc:name="Set payload with URI name" doc:id="bac678be-6661-42e7-ac54-db88dac44383" />
+		<http:request method="GET" doc:name="REST API request for Course with name" doc:id="9010ac49-c81f-4961-93f0-f0539494edb2" config-ref="Local_REST_API_Config" path="/api/courses/{name}" outputMimeType="application/json" >
+			<http:body ><![CDATA[{}]]></http:body>
+			<http:uri-params ><![CDATA[#[output application/java
+---
+{
+ name: payload
+}]]]></http:uri-params>
+		</http:request>
+	</flow>
+	<flow name="GET:\courses-get_all_courses" doc:id="686d41ad-7d8b-40c6-9bb5-3e5ea53efd88" >
+		<http:listener doc:name="Listener" doc:id="3dc9bfa3-eff1-4cfd-b931-8d47eeeb6695" config-ref="HTTP_Listener_configuration" path="/api/courses/" />
+		<http:request method="GET" doc:name="REST API request for all courses" doc:id="c7ed66df-bb09-4ecd-9406-151dac1c1f30" config-ref="Local_REST_API_Config" path="/api/courses/" outputMimeType="application/json" >
+			<http:body ><![CDATA[{}]]></http:body>
+		</http:request>
+	</flow>
+	<flow name="POST:\courses\post-create_course" doc:id="c1fd8373-a7e3-4b7d-bb5b-f3c8214c488b" >
+		<http:listener doc:name="Listener" doc:id="18b0ed4d-5b6a-4d60-ba96-ed37d1ca10be" config-ref="HTTP_Listener_configuration" path="/api/courses/add/" />
+		<http:request method="POST" doc:name="REST API request for new course" doc:id="7b565a3e-8eef-4d3e-b3ab-113acca530ae" config-ref="Local_REST_API_Config" path="/api/courses/" outputMimeType="application/json" >
+		</http:request>
+	</flow>
+	<flow name="DELETE:\courses\delete\id-delete_course" doc:id="3c8d98ce-89a7-4437-b9f4-3db38582e596" >
+		<http:listener doc:name="Listener with URI ID" doc:id="77cfb541-b6e1-4d5d-a6e4-e66381b36af0" config-ref="HTTP_Listener_configuration" path="/api/courses/delete/{id}" />
+		<set-payload value="#[attributes.uriParams.id]" doc:name="Set payload with URI ID" doc:id="663d6350-4921-40b2-b923-71a24bd46f2c" />
+		<http:request method="DELETE" doc:name="REST API request for deleting course with ID" doc:id="6db59045-4d70-4901-b696-4f1068d7ef91" config-ref="Local_REST_API_Config" path="/api/courses/delete/{id}" outputMimeType="application/json" >
+			<http:body ><![CDATA[{}]]></http:body>
+			<http:uri-params ><![CDATA[#[output application/java
+---
+{
+ id: payload
+}]]]></http:uri-params>
+		</http:request>
+	</flow>
+	<flow name="PUT:\courses\update\id-put_course" doc:id="42dc3b31-370b-4051-9799-0e957f2b1841" >
+		<http:listener doc:name="Listener with URI ID" doc:id="9ca7c395-64c4-4c4c-a3b7-3e70323be279" config-ref="HTTP_Listener_configuration" path="/api/courses/update/{id}" />
+		<set-variable value="#[attributes.uriParams.id]" doc:name="Set Variable with URI ID" doc:id="6677b155-ce84-445b-b608-bcd1f83c06b5" variableName="id" />
+		<logger level="INFO" doc:name="Logger" doc:id="526b8602-25ae-4c47-949a-dd9bd1fe7c43" message="#[vars.id]"/>
+		<http:request method="PUT" doc:name="REST API request for updating course with ID" doc:id="95024c7e-99df-4d2c-8ccd-5f2c9b09ca6a" config-ref="Local_REST_API_Config" path="/api/courses/update/{id}" outputMimeType="application/json" >
+			<http:uri-params ><![CDATA[#[output application/java
+---
+{
+ id: vars.id
+}]]]></http:uri-params>
+		</http:request>
+	</flow>
+</mule>
