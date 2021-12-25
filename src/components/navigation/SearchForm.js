@@ -8,6 +8,7 @@ const SearchForm = () => {
   const [recipes, setRecipes] = useState([]);
   const [alert, setAlert] = useState("");
   const url = `http://localhost:88/api/courses/${query.toLocaleLowerCase()}`;
+
   const getData = async () => {
     if (query !== "") {
       const result = await Axios.get(url);
