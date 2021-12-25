@@ -19,7 +19,7 @@ export default function CreateNewRecipe() {
 
   const history = useHistory();
 
-  async function create() {
+  async function createNewRecipe() {
     let item = {
       dishName,
       category,
@@ -40,7 +40,9 @@ export default function CreateNewRecipe() {
     );
 
     if (result.status !== 200) {
-      return setAlert(result.status + " " + result.statusText);
+      return setAlert(
+        result.status + " " + result.statusText + " - Please check input fields"
+      );
     }
 
     history.push("/");
@@ -227,7 +229,7 @@ export default function CreateNewRecipe() {
           </div>
           <br />
           <div style={{ textAlign: "center" }}>
-            <button onClick={create} className=" prettyB">
+            <button onClick={createNewRecipe} className=" prettyB">
               Submit
             </button>
           </div>
