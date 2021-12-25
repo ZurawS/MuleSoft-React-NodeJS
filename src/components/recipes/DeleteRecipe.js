@@ -14,7 +14,7 @@ export default function DeleteCourse({ _id }) {
     );
 
     if (result.status !== 200) {
-      setAlert(`You are not authorised to do this`);
+      setAlert(`Failed to delete this course!`);
     }
     history.push("/");
     window.location.reload();
