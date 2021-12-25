@@ -1,7 +1,7 @@
 import { useHistory } from "react-router-dom";
 import { useState } from "react";
 import Alert from "../elements/Alert";
-import APIRequest from "../elements/APIRequest";
+import APIRequest from "../actions/APIRequest";
 
 export default function DeleteCourse({ _id }) {
   const [alert, setAlert] = useState("");

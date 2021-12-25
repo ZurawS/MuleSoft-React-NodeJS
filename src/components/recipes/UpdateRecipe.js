@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import Alert from "../elements/Alert";
 import Axios from "axios";
-import APIRequest from "../elements/APIRequest";
+import APIRequest from "../actions/APIRequest";
 
 export default function UpdateCourse() {
   const id = window.location.href.split("?")[1];

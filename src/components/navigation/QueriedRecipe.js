@@ -3,7 +3,7 @@ import Axios from "axios";
 import Recipe from "../recipes/Recipe";
 import Alert from "../elements/Alert";
 
-const App = () => {
+const SearchForm = () => {
   const [query, setQuery] = useState("pizza");
   const [recipes, setRecipes] = useState([]);
   const [alert, setAlert] = useState("");
@@ -63,4 +63,4 @@ const App = () => {
   );
 };
 
-export default App;
+export default SearchForm;

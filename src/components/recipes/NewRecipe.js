@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
 import Alert from "../elements/Alert";
-import APIRequest from "../elements/APIRequest";
+import APIRequest from "../actions/APIRequest";
 
 export default function CreateNewRecipe() {
   const [dishName, setdishName] = useState("");
