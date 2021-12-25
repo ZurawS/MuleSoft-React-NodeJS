@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import Axios from "axios";
 import Recipe from "../recipes/Recipe";
-import Alert from "../elements/Alert";
+import Alert from "../actions/Alert";
 
 const SearchForm = () => {
   const [query, setQuery] = useState("pizza");

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
-import Alert from "../elements/Alert";
+import Alert from "../actions/Alert";
 import Axios from "axios";
 import APIRequest from "../actions/APIRequest";
 

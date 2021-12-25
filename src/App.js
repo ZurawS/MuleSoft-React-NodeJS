@@ -1,7 +1,7 @@
 import React from "react";
 import { BrowserRouter, Route, Switch } from "react-router-dom";
 
-import Navigation from "./components/elements/Navbar";
+import Navigation from "./components/navigation/Navbar";
 import newRecipe from "./components/recipes/NewRecipe";
 import deleteRecipe from "./components/recipes/DeleteRecipe";
 import QueriedRecipe from "./components/navigation/QueriedRecipe";

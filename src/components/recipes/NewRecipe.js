@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
-import Alert from "../elements/Alert";
+import Alert from "../actions/Alert";
 import APIRequest from "../actions/APIRequest";
 
 export default function CreateNewRecipe() {
