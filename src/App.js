@@ -4,7 +4,7 @@ import { BrowserRouter, Route, Switch } from "react-router-dom";
 import Navigation from "./components/navigation/Navbar";
 import newRecipe from "./components/recipes/NewRecipe";
 import deleteRecipe from "./components/recipes/DeleteRecipe";
-import QueriedRecipe from "./components/navigation/QueriedRecipe";
+import QueriedRecipe from "./components/navigation/SearchForm";
 import UpdateFormula from "./components/recipes/UpdateRecipe";
 
 class App extends React.Component {
