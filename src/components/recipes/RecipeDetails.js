@@ -3,7 +3,6 @@ import DeleteCourse from "./DeleteRecipe";
 import { Link } from "react-router-dom";
 
 const RecipeDetails = ({ recipe, onClose }) => {
-  console.log(recipe);
   const {
     dishName,
     ingredients,
