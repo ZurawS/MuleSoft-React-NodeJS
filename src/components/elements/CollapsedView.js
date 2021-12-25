@@ -1,7 +1,7 @@
 import React from "react";
 import { Card } from "react-bootstrap";
 
-function Actions({ recipe }) {
+function CollapsedView({ recipe }) {
   const { sourceUrl, _id } = recipe;
   return (
     <div className="bottom">
@@ -39,4 +39,4 @@ function Actions({ recipe }) {
   );
 }
 
-export default Actions;
+export default CollapsedView;
